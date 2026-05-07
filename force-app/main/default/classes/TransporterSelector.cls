@@ -1,42 +1,45 @@
 public with sharing class TransporterSelector {
 
-    public static Transporteur__c getCheapestTransporter(
-                                    String pays, String typeClient) {
-        List<Transporteur__c> transporteurs = [
-            SELECT Id, Name, TypeClient__c,
-                   Prix__c, Delai_de_livraison__c
-            FROM Transporteur__c
-            WHERE Pays__c INCLUDES (:pays)
-            AND TypeClient__c INCLUDES (:typeClient)
-            ORDER BY Prix__c ASC
+    // Transporteur le moins cher
+    public static Prix_de_livraison__c getCheapestTransporter(
+                                        String pays, String typeClient) {
+        List<Prix_de_livraison__c> prix = [
+            SELECT Id, Transporteur__c, Transporteur__r.Name,
+                   Pays__c, Prix_de_livraison__c, Delai_de_livraison__c
+            FROM Prix_de_livraison__c
+            WHERE Pays__c = :pays
+            AND Transporteur__r.TypeClient__c INCLUDES (:typeClient)
+            ORDER BY Prix_de_livraison__c ASC
             LIMIT 1
         ];
-        return transporteurs.isEmpty() ? null : transporteurs[0];
+        return prix.isEmpty() ? null : prix[0];
     }
 
-    public static Transporteur__c getFastestTransporter(
-                                    String pays, String typeClient) {
-        List<Transporteur__c> transporteurs = [
-            SELECT Id, Name, TypeClient__c,
-                   Prix__c, Delai_de_livraison__c
-            FROM Transporteur__c
-            WHERE Pays__c INCLUDES (:pays)
-            AND TypeClient__c INCLUDES (:typeClient)
+    // Transporteur le plus rapide
+    public static Prix_de_livraison__c getFastestTransporter(
+                                        String pays, String typeClient) {
+        List<Prix_de_livraison__c> prix = [
+            SELECT Id, Transporteur__c, Transporteur__r.Name,
+                   Pays__c, Prix_de_livraison__c, Delai_de_livraison__c
+            FROM Prix_de_livraison__c
+            WHERE Pays__c = :pays
+            AND Transporteur__r.TypeClient__c INCLUDES (:typeClient)
             ORDER BY Delai_de_livraison__c ASC
             LIMIT 1
         ];
-        return transporteurs.isEmpty() ? null : transporteurs[0];
+        return prix.isEmpty() ? null : prix[0];
     }
 
-    public static List<Transporteur__c> getCompatibleTransporters(
-                                         String pays, String typeClient) {
+    // Tous les transporteurs compatibles
+    public static List<Prix_de_livraison__c> getCompatibleTransporters(
+                                              String pays, String typeClient) {
         return [
-            SELECT Id, Name, TypeClient__c,
-                   Prix__c, Delai_de_livraison__c
-            FROM Transporteur__c
-            WHERE Pays__c INCLUDES (:pays)
-            AND TypeClient__c INCLUDES (:typeClient)
-            ORDER BY Prix__c ASC
+            SELECT Id, Transporteur__c, Transporteur__r.Name,
+                   Pays__c, Prix_de_livraison__c, Delai_de_livraison__c
+            FROM Prix_de_livraison__c
+            WHERE Pays__c = :pays
+            AND Transporteur__r.TypeClient__c INCLUDES (:typeClient)
+            ORDER BY Prix_de_livraison__c ASC
         ];
     }
 }

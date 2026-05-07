@@ -6,12 +6,9 @@ public with sharing class OrderService {
         Account account = AccountSelector.getAccountByOrderId(
                                             orderToValidate.Id);
         
-        // Compter le nombre de produits de la commande
-        Integer nbProduits = [
-            SELECT COUNT() 
-            FROM OrderItem 
-            WHERE OrderId = :orderToValidate.Id
-        ];
+        // Appel dans Selector
+        Integer nbProduits = OrderSelector.countOrderItems(orderToValidate.Id);
+        
         
         // Vérifier le nombre minimum selon le type de client
         if (account.TypeClient__c == 'Particulier') {
