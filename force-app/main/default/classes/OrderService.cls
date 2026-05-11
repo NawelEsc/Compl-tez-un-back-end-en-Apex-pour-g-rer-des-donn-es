@@ -28,20 +28,20 @@ public with sharing class OrderService {
         Account account = AccountSelector.getAccountByOrderId(
                                             orderToValidate.Id);
 
-        // Récupérer le moins cher et le plus rapide
-        Transporteur__c cheapestTransporter = TransporterSelector.getCheapestTransporter(
+        // Récupérer le prix de livraison le moins cher et le plus rapide
+        Prix_de_livraison__c cheapestDeliveryPrice = TransporterSelector.getCheapestTransporter(
                                             orderToValidate.Pays__c,
                                             account.TypeClient__c);
 
-        Transporteur__c fastestTransporter = TransporterSelector.getFastestTransporter(
+        Prix_de_livraison__c fastestDeliveryPrice = TransporterSelector.getFastestTransporter(
                                             orderToValidate.Pays__c,
                                             account.TypeClient__c);
 
         // Assigner le transporteur à la commande
-        if (cheapestTransporter != null) {
-            orderToValidate.Transporteur__c = cheapestTransporter.Id;
-        } else if (fastestTransporter != null) {
-            orderToValidate.Transporteur__c = fastestTransporter.Id;
+        if (cheapestDeliveryPrice != null) {
+            orderToValidate.Transporteur__c = cheapestDeliveryPrice.Transporteur__c;
+        } else if (fastestDeliveryPrice != null) {
+            orderToValidate.Transporteur__c = fastestDeliveryPrice.Transporteur__c;
         } else {
             orderToValidate.addError(
                 'Aucun transporteur disponible pour ce pays et ce type de client.'

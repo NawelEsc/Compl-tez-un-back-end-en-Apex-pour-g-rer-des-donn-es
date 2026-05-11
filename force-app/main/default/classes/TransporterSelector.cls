@@ -1,6 +1,5 @@
 public with sharing class TransporterSelector {
 
-    // Transporteur le moins cher
     public static Prix_de_livraison__c getCheapestTransporter(
                                         String pays, String typeClient) {
         List<Prix_de_livraison__c> prix = [
@@ -15,7 +14,6 @@ public with sharing class TransporterSelector {
         return prix.isEmpty() ? null : prix[0];
     }
 
-    // Transporteur le plus rapide
     public static Prix_de_livraison__c getFastestTransporter(
                                         String pays, String typeClient) {
         List<Prix_de_livraison__c> prix = [
@@ -30,7 +28,6 @@ public with sharing class TransporterSelector {
         return prix.isEmpty() ? null : prix[0];
     }
 
-    // Tous les transporteurs compatibles
     public static List<Prix_de_livraison__c> getCompatibleTransporters(
                                               String pays, String typeClient) {
         return [
