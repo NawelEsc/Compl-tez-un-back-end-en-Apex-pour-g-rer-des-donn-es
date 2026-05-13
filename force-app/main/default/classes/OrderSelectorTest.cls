@@ -23,6 +23,12 @@ public class OrderSelectorTest {
         );
         insert transporteur;
 
+        // Prix de livraison pour les 4 pays pour que le trigger ne bloque pas
+        insert new Prix_de_livraison__c(Name='10', Transporteur__c=transporteur.Id, Pays__c='France', Delai_de_livraison__c=2);
+        insert new Prix_de_livraison__c(Name='12', Transporteur__c=transporteur.Id, Pays__c='Belgique', Delai_de_livraison__c=2);
+        insert new Prix_de_livraison__c(Name='14', Transporteur__c=transporteur.Id, Pays__c='Suisse', Delai_de_livraison__c=2);
+        insert new Prix_de_livraison__c(Name='16', Transporteur__c=transporteur.Id, Pays__c='Luxembourg', Delai_de_livraison__c=2);
+
         Product2 produit = new Product2(
             Name = 'Produit Test',
             IsActive = true
@@ -104,7 +110,6 @@ public class OrderSelectorTest {
         insert commandeLuxembourg;
     }
 
-    // TEST 1 - Compter 3 produits - Particulier France
     @isTest
     static void testCountOrderItems_3Produits_France() {
         Order commande = [SELECT Id FROM Order 
@@ -113,11 +118,9 @@ public class OrderSelectorTest {
         Test.startTest();
         Integer count = OrderSelector.countOrderItems(commande.Id);
         Test.stopTest();
-        System.assertEquals(3, count, 
-            'Le nombre de produits doit être 3 pour un Particulier en France');
+        System.assertEquals(3, count, 'Le nombre de produits doit être 3 pour un Particulier en France');
     }
 
-    // TEST 2 - Compter 5 produits - Professionnel Belgique
     @isTest
     static void testCountOrderItems_5Produits_Belgique() {
         Order commande = [SELECT Id FROM Order 
@@ -126,31 +129,24 @@ public class OrderSelectorTest {
         Test.startTest();
         Integer count = OrderSelector.countOrderItems(commande.Id);
         Test.stopTest();
-        System.assertEquals(5, count, 
-            'Le nombre de produits doit être 5 pour un Professionnel en Belgique');
+        System.assertEquals(5, count, 'Le nombre de produits doit être 5 pour un Professionnel en Belgique');
     }
 
-    // TEST 3 - Commande vide Suisse
     @isTest
     static void testCountOrderItems_Vide_Suisse() {
-        Order commande = [SELECT Id FROM Order 
-                         WHERE Pays__c = 'Suisse' LIMIT 1];
+        Order commande = [SELECT Id FROM Order WHERE Pays__c = 'Suisse' LIMIT 1];
         Test.startTest();
         Integer count = OrderSelector.countOrderItems(commande.Id);
         Test.stopTest();
-        System.assertEquals(0, count, 
-            'Une commande vide en Suisse doit retourner 0');
+        System.assertEquals(0, count, 'Une commande vide en Suisse doit retourner 0');
     }
 
-    // TEST 4 - Commande vide Luxembourg
     @isTest
     static void testCountOrderItems_Vide_Luxembourg() {
-        Order commande = [SELECT Id FROM Order 
-                         WHERE Pays__c = 'Luxembourg' LIMIT 1];
+        Order commande = [SELECT Id FROM Order WHERE Pays__c = 'Luxembourg' LIMIT 1];
         Test.startTest();
         Integer count = OrderSelector.countOrderItems(commande.Id);
         Test.stopTest();
-        System.assertEquals(0, count, 
-            'Une commande vide au Luxembourg doit retourner 0');
+        System.assertEquals(0, count, 'Une commande vide au Luxembourg doit retourner 0');
     }
 }
