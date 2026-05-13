@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AumoinsUnPays</fullName>
+    <active>true</active>
+    <errorConditionFormula>NOT(INCLUDES(Pays__c, &quot;France&quot;)) &amp;&amp;
+NOT(INCLUDES(Pays__c, &quot;Belgique&quot;)) &amp;&amp;
+NOT(INCLUDES(Pays__c, &quot;Suisse&quot;)) &amp;&amp;
+NOT(INCLUDES(Pays__c, &quot;Luxembourg&quot;))</errorConditionFormula>
+    <errorDisplayField>Pays__c</errorDisplayField>
+    <errorMessage>Le transporteur doit desservir au moins un pays.</errorMessage>
+</ValidationRule>

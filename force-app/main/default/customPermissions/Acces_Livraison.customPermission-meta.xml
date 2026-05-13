@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Permet d&apos;accéder à l&apos;écran de lancement de livraison</description>
+    <isLicensed>false</isLicensed>
+    <label>Acces Livraison</label>
+</CustomPermission>

@@ -1,0 +1,123 @@
+<template>
+    <lightning-card title="Lancer la livraison" icon-name="standard:orders">
+
+        <template if:true={isLoading}>
+            <div class="slds-align_absolute-center slds-p-around_large">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="slds-p-around_medium">
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <lightning-icon icon-name="utility:error" alternative-text="Erreur" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                    {errorMessage}
+                </div>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={aucunTransporteur}>
+                <div class="slds-p-around_medium">
+                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                        <lightning-icon icon-name="utility:warning" alternative-text="Attention" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                        Aucun transporteur disponible pour ce pays et ce type de client.
+                    </div>
+                </div>
+            </template>
+
+            <template if:false={aucunTransporteur}>
+                <div class="slds-p-around_medium">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Options recommandées</h3>
+                    <div class="slds-grid slds-gutters slds-m-bottom_medium">
+
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class={classMoinsCher} onclick={selectMoinsCher} role="button" tabindex="0" onkeypress={handleKeyMoinsCher}>
+                                <div class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="utility:money" size="small" alternative-text="Moins cher"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <p class="slds-text-title_caps slds-text-color_weak">Moins cher</p>
+                                        <template if:true={moinsCher}>
+                                            <p class="slds-text-heading_small">{moinsCher.nom}</p>
+                                            <p class="slds-text-body_small">{moinsCher.prix} € — {moinsCher.delai} jour(s)</p>
+                                        </template>
+                                        <template if:false={moinsCher}>
+                                            <p class="slds-text-body_small slds-text-color_weak">Non disponible</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class={classPlusRapide} onclick={selectPlusRapide} role="button" tabindex="0" onkeypress={handleKeyPlusRapide}>
+                                <div class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="utility:animal_and_nature" size="small" alternative-text="Plus rapide"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <p class="slds-text-title_caps slds-text-color_weak">Plus rapide</p>
+                                        <template if:true={plusRapide}>
+                                            <p class="slds-text-heading_small">{plusRapide.nom}</p>
+                                            <p class="slds-text-body_small">{plusRapide.prix} € — {plusRapide.delai} jour(s)</p>
+                                        </template>
+                                        <template if:false={plusRapide}>
+                                            <p class="slds-text-body_small slds-text-color_weak">Non disponible</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="slds-has-divider_top-space slds-m-bottom_medium"></div>
+
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Choisir un autre transporteur</h3>
+                    <lightning-combobox
+                        name="transporteur"
+                        label="Transporteur"
+                        placeholder="Sélectionner un transporteur"
+                        value={transporteurSelectionneId}
+                        options={optionsTransporteurs}
+                        onchange={handleTransporteurChange}>
+                    </lightning-combobox>
+
+                    <template if:true={transporteurSelectionne}>
+                        <div class="slds-box slds-m-top_medium slds-theme_shade">
+                            <p class="slds-text-body_regular">
+                                <strong>{transporteurSelectionne.nom}</strong> —
+                                {transporteurSelectionne.prix} € —
+                                {transporteurSelectionne.delai} jour(s)
+                            </p>
+                        </div>
+                    </template>
+
+                    <div class="slds-m-top_medium">
+                        <lightning-button
+                            variant="brand"
+                            label="Lancer la livraison"
+                            icon-name="utility:send"
+                            icon-position="right"
+                            onclick={lancerLivraison}
+                            disabled={boutonDisabled}>
+                        </lightning-button>
+                    </div>
+
+                    <template if:true={showResultat}>
+                        <div class="slds-m-top_medium">
+                            <div class={classeResultat} role="status">
+                                <lightning-icon icon-name={iconeResultat} alternative-text="Résultat" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                {messageResultat}
+                            </div>
+                        </div>
+                    </template>
+
+                </div>
+            </template>
+        </template>
+
+    </lightning-card>
+</template>
