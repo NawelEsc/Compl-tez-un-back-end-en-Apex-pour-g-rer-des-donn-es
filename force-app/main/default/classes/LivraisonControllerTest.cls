@@ -59,13 +59,14 @@ private class LivraisonControllerTest {
         insert new Prix_de_livraison__c(Name='10', Transporteur__c=t1.Id, Pays__c='France', Delai_de_livraison__c=3);
         insert new Prix_de_livraison__c(Name='20', Transporteur__c=t2.Id, Pays__c='France', Delai_de_livraison__c=1);
 
-        // Commande particulier France en Draft
+        // Commande particulier France en Draft — transporteur assigné pour satisfaire la validation rule
         Order cmd = new Order(
             AccountId       = particulier.Id,
             Pays__c         = 'France',
             Status          = 'Draft',
             EffectiveDate   = Date.today(),
-            Pricebook2Id    = pricebookId
+            Pricebook2Id    = pricebookId,
+            Transporteur__c = t1.Id
         );
         insert cmd;
     }
@@ -83,13 +84,18 @@ private class LivraisonControllerTest {
         return [SELECT Id FROM Transporteur__c WHERE Name = :nom LIMIT 1].Id;
     }
 
-    private static Order createOrder(Id accountId, String pays) {
+    /**
+     * @description Crée une commande en Draft avec un transporteur assigné
+     *              pour satisfaire la validation rule sur Order.Transporteur__c.
+     */
+    private static Order createOrder(Id accountId, String pays, Id transporteurId) {
         Order cmd = new Order(
-            AccountId     = accountId,
-            Pays__c       = pays,
-            Status        = 'Draft',
-            EffectiveDate = Date.today(),
-            Pricebook2Id  = Test.getStandardPricebookId()
+            AccountId       = accountId,
+            Pays__c         = pays,
+            Status          = 'Draft',
+            EffectiveDate   = Date.today(),
+            Pricebook2Id    = Test.getStandardPricebookId(),
+            Transporteur__c = transporteurId
         );
         insert cmd;
         return cmd;
@@ -113,9 +119,10 @@ private class LivraisonControllerTest {
 
     @IsTest
     static void testGetMoinsCher_aucunTransporteur_retourneNull() {
-        Account particulier = [SELECT Id FROM Account WHERE TypeClient__c = 'Particulier' LIMIT 1];
+        Account particulier   = [SELECT Id FROM Account WHERE TypeClient__c = 'Particulier' LIMIT 1];
+        Id transporteurId     = getTransporteurId('TransporteurA');
         // Belgique — aucun transporteur Particulier disponible
-        Order cmd = createOrder(particulier.Id, 'Belgique');
+        Order cmd = createOrder(particulier.Id, 'Belgique', transporteurId);
 
         Test.startTest();
         LivraisonController.TransporteurOption result = LivraisonController.getMoinsCher(cmd.Id);
@@ -142,8 +149,9 @@ private class LivraisonControllerTest {
 
     @IsTest
     static void testGetPlusRapide_aucunTransporteur_retourneNull() {
-        Account particulier = [SELECT Id FROM Account WHERE TypeClient__c = 'Particulier' LIMIT 1];
-        Order cmd = createOrder(particulier.Id, 'Suisse');
+        Account particulier   = [SELECT Id FROM Account WHERE TypeClient__c = 'Particulier' LIMIT 1];
+        Id transporteurId     = getTransporteurId('TransporteurA');
+        Order cmd = createOrder(particulier.Id, 'Suisse', transporteurId);
 
         Test.startTest();
         LivraisonController.TransporteurOption result = LivraisonController.getPlusRapide(cmd.Id);
@@ -170,8 +178,9 @@ private class LivraisonControllerTest {
 
     @IsTest
     static void testGetTransporteursCompatibles_aucunTransporteur_retourneListeVide() {
-        Account particulier = [SELECT Id FROM Account WHERE TypeClient__c = 'Particulier' LIMIT 1];
-        Order cmd = createOrder(particulier.Id, 'Luxembourg');
+        Account particulier   = [SELECT Id FROM Account WHERE TypeClient__c = 'Particulier' LIMIT 1];
+        Id transporteurId     = getTransporteurId('TransporteurA');
+        Order cmd = createOrder(particulier.Id, 'Luxembourg', transporteurId);
 
         Test.startTest();
         List<LivraisonController.TransporteurOption> results =

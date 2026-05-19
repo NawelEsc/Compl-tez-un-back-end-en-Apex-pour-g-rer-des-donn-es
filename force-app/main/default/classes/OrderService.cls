@@ -1,5 +1,19 @@
+/**
+ * @description Service métier pour la gestion des commandes LTP.
+ *              Contient la logique de validation des commandes et de sélection
+ *              automatique du transporteur le plus adapté.
+ *              S'appuie sur AccountSelector, OrderSelector et TransporterSelector.
+ *              Appelé par OrderTrigger sur before insert et before update.
+ */
 public with sharing class OrderService {
 
+    /**
+     * @description Valide le nombre minimum de produits requis selon le type de client.
+     *              La validation ne s'applique que lorsque le statut est "Activated".
+     *              - Particulier : minimum 3 produits
+     *              - Professionnel : minimum 5 produits
+     * @param  orderToValidate  Enregistrement Order en cours d'insertion ou de mise à jour
+     */
     public static void validateOrder(Order orderToValidate) {
 
         // Valider uniquement quand le statut est Activated
@@ -23,6 +37,13 @@ public with sharing class OrderService {
         }
     }
 
+    /**
+     * @description Sélectionne automatiquement le transporteur le moins cher compatible
+     *              avec le pays de livraison et le type de client de la commande.
+     *              Si aucun transporteur n'est disponible, une erreur est levée.
+     *              La sélection ne s'applique que lorsque le statut est "Activated".
+     * @param  orderToValidate  Enregistrement Order en cours d'insertion ou de mise à jour
+     */
     public static void selectTransporter(Order orderToValidate) {
 
         // Sélectionner uniquement quand le statut est Activated

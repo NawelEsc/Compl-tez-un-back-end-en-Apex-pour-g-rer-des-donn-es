@@ -62,7 +62,6 @@ public class OrderServiceTest {
 
     // ─────────────────────────────────────────────────────────────
     // TEST 1 — Particulier avec moins de 3 produits → erreur
-    // Commande en Draft d'abord, puis on tente Activated sans produits
     // ─────────────────────────────────────────────────────────────
     @IsTest
     static void testParticulierMoins3Produits() {
@@ -79,7 +78,6 @@ public class OrderServiceTest {
         );
         insert commande;
 
-        // Passer à Activated sans produits → doit déclencher l'erreur
         commande.Status = 'Activated';
 
         Test.startTest();
@@ -208,6 +206,9 @@ public class OrderServiceTest {
         );
         insert commande;
 
+        // Passer à Activated pour déclencher selectTransporter
+        commande.Status = 'Activated';
+
         Test.startTest();
         OrderService.selectTransporter(commande);
         Test.stopTest();
@@ -233,6 +234,8 @@ public class OrderServiceTest {
             Transporteur__c = trans.Id
         );
         insert commande;
+
+        commande.Status = 'Activated';
 
         Test.startTest();
         OrderService.selectTransporter(commande);
@@ -260,6 +263,8 @@ public class OrderServiceTest {
         );
         insert commande;
 
+        commande.Status = 'Activated';
+
         Test.startTest();
         OrderService.selectTransporter(commande);
         Test.stopTest();
@@ -286,6 +291,8 @@ public class OrderServiceTest {
         );
         insert commande;
 
+        commande.Status = 'Activated';
+
         Test.startTest();
         OrderService.selectTransporter(commande);
         Test.stopTest();
@@ -311,6 +318,8 @@ public class OrderServiceTest {
             Transporteur__c = trans.Id
         );
         insert commande;
+
+        commande.Status = 'Activated';
 
         Test.startTest();
         OrderService.selectTransporter(commande);
