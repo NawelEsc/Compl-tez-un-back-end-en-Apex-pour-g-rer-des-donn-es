@@ -2,6 +2,9 @@ public with sharing class OrderService {
 
     public static void validateOrder(Order orderToValidate) {
 
+        // Valider uniquement quand le statut est Activated
+        if (orderToValidate.Status != 'Activated') return;
+
         // Récupérer le compte directement depuis AccountId de la commande
         Account account = AccountSelector.getAccountById(orderToValidate.AccountId);
 
@@ -21,6 +24,9 @@ public with sharing class OrderService {
     }
 
     public static void selectTransporter(Order orderToValidate) {
+
+        // Sélectionner uniquement quand le statut est Activated
+        if (orderToValidate.Status != 'Activated') return;
 
         // Récupérer le compte directement depuis AccountId de la commande
         Account account = AccountSelector.getAccountById(orderToValidate.AccountId);
