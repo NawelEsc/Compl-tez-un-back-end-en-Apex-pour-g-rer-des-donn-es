@@ -121,14 +121,14 @@ private class LivraisonControllerTest {
     static void testGetMoinsCher_aucunTransporteur_retourneNull() {
         Account particulier   = [SELECT Id FROM Account WHERE TypeClient__c = 'Particulier' LIMIT 1];
         Id transporteurId     = getTransporteurId('TransporteurA');
-        // Belgique — aucun transporteur Particulier disponible
-        Order cmd = createOrder(particulier.Id, 'Belgique', transporteurId);
+        // France — aucun transporteur Particulier disponible
+        Order cmd = createOrder(particulier.Id, 'France', transporteurId);
 
         Test.startTest();
         LivraisonController.TransporteurOption result = LivraisonController.getMoinsCher(cmd.Id);
         Test.stopTest();
 
-        System.assertEquals(null, result, 'Doit retourner null — aucun transporteur Particulier en Belgique');
+        System.assertEquals(null, result, 'Doit retourner null — aucun transporteur Particulier en France');
     }
 
     // ─────────────────────────────────────────────────────────────
